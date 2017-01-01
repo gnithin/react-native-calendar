@@ -121,7 +121,7 @@ export default class Calendar extends Component {
 
   selectDate(date) {
     this.setState({ selectedMoment: date });
-    this.props.onDateSelect && this.props.onDateSelect(date ? date.format(): null );
+    this.props.onDateSelect && this.props.onDateSelect(date ? date: null );
   }
 
   onPrev = () => {
