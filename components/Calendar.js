@@ -212,13 +212,16 @@ export default class Calendar extends Component {
       const isoWeekday = (renderIndex + weekStart) % 7;
 
       if (dayIndex >= 0 && dayIndex < argMonthDaysCount) {
+        let currDateMoment = moment(startOfArgMonthMoment).set('date', dayIndex + 1);
+        let isDisabled = this.isDisabled(currDateMoment);
+
         days.push((
           <Day
             startOfMonth={startOfArgMonthMoment}
             isWeekend={isoWeekday === 0 || isoWeekday === 6}
             key={`${renderIndex}`}
             onPress={() => {
-              this.selectDate(moment(startOfArgMonthMoment).set('date', dayIndex + 1));
+              this.selectDate(currDateMoment);
             }}
             caption={`${dayIndex + 1}`}
             isToday={argMonthIsToday && (dayIndex === todayIndex)}
@@ -226,6 +229,7 @@ export default class Calendar extends Component {
             event={events && events[dayIndex]}
             showEventIndicators={this.props.showEventIndicators}
             customStyle={this.props.customStyle}
+            isDisabled={isDisabled}
           />
         ));
       } else {
