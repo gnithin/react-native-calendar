@@ -99,6 +99,9 @@ const styles = StyleSheet.create({
   weekendDayText: {
     color: '#cccccc',
   },
+  disabledText: {
+    color: 'grey'
+  }
 });
 
 export default styles;

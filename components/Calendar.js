@@ -48,6 +48,8 @@ export default class Calendar extends Component {
     titleFormat: PropTypes.string,
     today: PropTypes.any,
     weekStart: PropTypes.number,
+    disableFutureDates: PropTypes.bool,
+    disablePastDates: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -66,6 +68,8 @@ export default class Calendar extends Component {
     titleFormat: 'MMMM YYYY',
     today: moment(),
     weekStart: 1,
+    disablePastDates: false,
+    disableFutureDates: false,
   };
 
   componentDidMount() {
@@ -119,9 +123,33 @@ export default class Calendar extends Component {
     return parsedDates;
   }
 
+  isDisabled = (date) => {
+    let currDate = moment();
+    let shouldBeDisabled = false;
+
+    if(this.props.disablePastDates){
+      if(date.isBefore(currDate)){
+        shouldBeDisabled = true;
+      }
+    }
+
+    if(this.props.disableFutureDates){
+      console.log("Curr date - ", currDate.format("DD-MM-YYYY"));
+      console.log("sel date - ", date.format("DD-MM-YYYY"));
+      console.log("Resutl - ", date.isAfter(currDate));
+      if(date.isAfter(currDate)){
+        shouldBeDisabled= true;
+      }
+    }
+
+    return shouldBeDisabled;
+  }
+
   selectDate(date) {
-    this.setState({ selectedMoment: date });
-    this.props.onDateSelect && this.props.onDateSelect(date ? date: null );
+    if(!this.isDisabled(date)){
+      this.setState({ selectedMoment: date });
+      this.props.onDateSelect && this.props.onDateSelect(date ? date: null );
+    }
   }
 
   onPrev = () => {
@@ -184,13 +212,16 @@ export default class Calendar extends Component {
       const isoWeekday = (renderIndex + weekStart) % 7;
 
       if (dayIndex >= 0 && dayIndex < argMonthDaysCount) {
+        let currDateMoment = moment(startOfArgMonthMoment).set('date', dayIndex + 1);
+        let isDisabled = this.isDisabled(currDateMoment);
+
         days.push((
           <Day
             startOfMonth={startOfArgMonthMoment}
             isWeekend={isoWeekday === 0 || isoWeekday === 6}
             key={`${renderIndex}`}
             onPress={() => {
-              this.selectDate(moment(startOfArgMonthMoment).set('date', dayIndex + 1));
+              this.selectDate(currDateMoment);
             }}
             caption={`${dayIndex + 1}`}
             isToday={argMonthIsToday && (dayIndex === todayIndex)}
@@ -198,6 +229,7 @@ export default class Calendar extends Component {
             event={events && events[dayIndex]}
             showEventIndicators={this.props.showEventIndicators}
             customStyle={this.props.customStyle}
+            isDisabled={isDisabled}
           />
         ));
       } else {

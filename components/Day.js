@@ -23,6 +23,7 @@ export default class Day extends Component {
     isWeekend: PropTypes.bool,
     onPress: PropTypes.func,
     showEventIndicators: PropTypes.bool,
+    isDisabled: PropTypes.bool,
   }
 
   dayCircleStyle = (isWeekend, isSelected, isToday, event) => {
@@ -49,9 +50,13 @@ export default class Day extends Component {
 
   dayTextStyle = (isWeekend, isSelected, isToday, event) => {
     const { customStyle } = this.props;
+    let isDisabled = this.props.isDisabled;
+
     const dayTextStyle = [styles.day, customStyle.day];
 
-    if (isToday && !isSelected) {
+    if (isDisabled){
+      dayTextStyle.push(styles.disabledText, customStyle.disabledText);
+    } else if (isToday && !isSelected) {
       dayTextStyle.push(styles.currentDayText, customStyle.currentDayText);
     } else if (isToday || isSelected) {
       dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
