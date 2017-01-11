@@ -134,9 +134,6 @@ export default class Calendar extends Component {
     }
 
     if(this.props.disableFutureDates){
-      console.log("Curr date - ", currDate.format("DD-MM-YYYY"));
-      console.log("sel date - ", date.format("DD-MM-YYYY"));
-      console.log("Resutl - ", date.isAfter(currDate));
       if(date.isAfter(currDate)){
         shouldBeDisabled= true;
       }
